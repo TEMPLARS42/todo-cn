@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, LogIn, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { toasty } from './configs/toasty.config';
 
 export default function LandingPage({ }) {
     const [roomId, setRoomId] = useState('');
@@ -12,6 +13,8 @@ export default function LandingPage({ }) {
         if (roomId.trim()) {
             navigate(`/todos/${roomId}`);
         }
+        else
+            toasty.warn("Please enter a room code !!");
     };
 
     const handleCreateRoom = () => {

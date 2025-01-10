@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import TodoEditor from './Sheet/TodoEditor';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, ClipboardCopy, House } from 'lucide-react';
 import { useSocketContext } from './context/SocketContext';
 import { useParams } from 'react-router-dom';
+import { toasty } from './configs/toasty.config';
+import { use } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function TodoList() {
     const { roomId } = useParams();
+    const navigate = useNavigate();
     // const roomId = "5225";
     const [todos, setTodos] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
@@ -58,6 +62,11 @@ export default function TodoList() {
         setTodos(todos.filter(todo => todo._id !== id));
     }
 
+    const copyToClipboard = async () => {
+        await navigator.clipboard.writeText(roomId)
+        toasty.success("Copied to clipboard !!");
+    }
+
     const handleSave = () => {
         if (newRoomName.trim()) {
             setRoomName(newRoomName); // Update the room name if it's not empty
@@ -70,36 +79,48 @@ export default function TodoList() {
         <div className="todo-container">
             <div className="container">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            className="form-control todo-title mb-0"
-                            value={newRoomName}
-                            onChange={(e) => setNewRoomName(e.target.value)}
-                            onBlur={handleSave} // Save changes when input loses focus
-                            autoFocus
-                        />
-                    ) : (
-                        <h1
-                            className="todo-title mb-0"
-                            onClick={() => setIsEditing(true)} // Enable editing on click
-                            style={{ cursor: 'pointer' }} // Change cursor to indicate it's clickable
+                    <div className='d-flex gap-2'>
+                        <button
+                            onClick={() => navigate("/")}
+                            type='button'
+                            className="btn btn-primary d-flex align-items-center gap-2 add-todo-btn"
+                            title="Add new todo"
                         >
-                            {roomName}
-                        </h1>
-                    )}
-                    <button
-                        onClick={addTodo}
-                        type='button'
-                        className="btn btn-primary d-flex align-items-center gap-2 add-todo-btn"
-                        title="Add new todo"
-                    >
-                        <Plus size={24} />
-                    </button>
+                            <House size={24} />
+                        </button>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                className="form-control todo-title mb-0"
+                                value={newRoomName}
+                                onChange={(e) => setNewRoomName(e.target.value)}
+                                onBlur={handleSave} // Save changes when input loses focus
+                                autoFocus
+                            />
+                        ) : (
+                            <h1
+                                className="todo-title mb-0"
+                                onClick={() => setIsEditing(true)} // Enable editing on click
+                                style={{ cursor: 'pointer' }} // Change cursor to indicate it's clickable
+                            >
+                                {roomName}
+                            </h1>
+                        )}
+                    </div>
+                    <div className='d-flex gap-2'>
+                        <button
+                            onClick={copyToClipboard}
+                            type='button'
+                            className="btn btn-primary d-flex align-items-center gap-2 add-todo-btn"
+                            title="Copy room code"
+                        >
+                            <ClipboardCopy size={24} />
+                        </button>
+                    </div>
                 </div>
                 {todos.length > 0 && <div className="todo-list">
                     {todos.map(todo => (
-                        <div className='d-flex gap-4'>
+                        <div className='d-flex gap-4' key={todo._id}>
                             <TodoEditor
                                 key={todo._id}
                                 todoId={todo._id}
