@@ -43,6 +43,14 @@ export default function TodoList() {
         socket.on("todo-toggled", todoId => {
             setTodos(prev => prev.map(todo => todo._id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo))
         })
+
+        return () => {
+            socket.off("load-todos");
+            socket.off("todo-added");
+            socket.off("todo-removed");
+            socket.off("room-name-updated");
+            socket.off("todo-toggled");
+        }
     }, [socket, roomId]);
 
     const toggleTodo = (id, action) => {
@@ -58,7 +66,7 @@ export default function TodoList() {
     }
 
     const removeTodo = (id) => {
-        socket.emit("remove-todo", id);
+        socket.emit("remove-todo", { todoId: id, roomId });
         setTodos(todos.filter(todo => todo._id !== id));
     }
 
@@ -108,6 +116,14 @@ export default function TodoList() {
                         )}
                     </div>
                     <div className='d-flex gap-2'>
+                        <button
+                            onClick={() => addTodo()}
+                            type='button'
+                            className="btn btn-primary d-flex align-items-center gap-2 add-todo-btn"
+                            title="Add new todo"
+                        >
+                            <Plus size={24} />
+                        </button>
                         <button
                             onClick={copyToClipboard}
                             type='button'

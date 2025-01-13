@@ -68,7 +68,7 @@ io.on("connection", socket => {
     })
 
     socket.on("remove-todo", async ({ todoId, roomId }) => {
-        await TodoModal.deleteOne({ _id: todoId });
+        await TodoModal.deleteOne({ _id: new ObjectId(todoId) });
         socket.in(roomId).emit("todo-removed", todoId);
     })
 

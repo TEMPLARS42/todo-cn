@@ -1,0 +1,29 @@
+{
+  "name": "todo-cn",
+  "version": "1.0.0",
+  "description": "A collaborative todo web app for managing todo's single handedly or with your team members.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron": "electron .",
+    "build": "react-scripts build",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "todo-cn",
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/fav.png"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8"
+  }
+}
